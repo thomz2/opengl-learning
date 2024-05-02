@@ -9,6 +9,7 @@
 #include "header/VBO.h"
 #include "header/VAO.h"
 #include "header/EBO.h"
+#include "header/Camera.h"
 
 using namespace std;
 
@@ -103,12 +104,17 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
 
+    Camera camera(800, 800, glm::vec3(0.0f, 0.0f, 2.0f));
+
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.5f, 0.7f, 0.9f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // glUseProgram(shaderProgram);
         shaderProgram.Activate();
+
+        camera.Inputs(window);
+        camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
 
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::mat4(1.0f);

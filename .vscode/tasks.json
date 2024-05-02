@@ -8,7 +8,7 @@
             "args": [
                 "-g",
                 "${workspaceFolder}\\src\\class\\*.cpp",
-                // "${workspaceFolder}\\src\\header\\*.h",
+                // "${workspaceFolder}\\src\\header\\*.hpp",
                 "-std=c++17",
                 "-I${workspaceFolder}/include",
                 "-L${workspaceFolder}/lib",
