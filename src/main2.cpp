@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <stb/stb_image.h>
+
 #include "header/shaderClass.h"
 #include "header/VBO.h"
 #include "header/VAO.h"
@@ -54,27 +56,16 @@ int main() {
     glViewport(0, 0, 800, 800);
 
     GLfloat vertices[] =
-    {
-        // -0.5f, -0.5f * float(sqrt(3)) / 3,    0.5f,  0.8f, 0.3f, 0.02f,
-        //  0.5f, -0.5f * float(sqrt(3)) / 3,    0.0f,  0.8f, 0.3f, 0.02f,
-        //  0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f,  1.0f, 0.6f, 0.32f,
-        // -0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,  0.9f, 0.45f, 0.17f,
-        //  0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,  0.9f, 0.45f, 0.17f,
-        //  0.0f, -0.5f * float(sqrt(3)) / 3,    0.5f,  0.8f, 0.3f, 0.02f,
-
-        -0.5f,  0.0f,  0.5f,  0.8f, 0.3f, 0.02f,
-        -0.5f,  0.0f, -0.5f,  0.8f, 0.3f, 0.02f,
-         0.5f,  0.0f, -0.5f,  1.0f, 0.6f, 0.32f,
-         0.5f,  0.0f,  0.5f,  0.9f, 0.45f, 0.17f,
-         0.0f,  0.8f , 0.0f,  0.8f, 0.3f, 0.02f,
+    { //     COORDENADAS    /         CORES
+        -0.5f,  0.0f,  0.5f,    0.8f, 0.3f , 0.02f,     0.0f, 0.0f, // frente baixo esquerda
+        -0.5f,  0.0f, -0.5f,    0.8f, 0.3f , 0.02f,     0.0f, 0.0f, // trás   baixo esquerda
+         0.5f,  0.0f, -0.5f,    1.0f, 0.6f , 0.32f,     1.0f, 0.0f, // trás   baixo direita
+         0.5f,  0.0f,  0.5f,    0.9f, 0.45f, 0.17f,     1.0f, 0.0f, // frente baixo direita
+         0.0f,  0.8f , 0.0f,    0.8f, 0.3f , 0.02f,     0.5f, -1.0f, // topo
     };
 
     GLuint indices[] = 
     {
-        // 0, 3, 5,
-        // 3, 2, 4,
-        // 5, 4, 1
-
         0, 1, 2,
         0, 2, 3,
         0, 1, 4,
@@ -91,13 +82,40 @@ int main() {
     VBO VBO1(vertices, sizeof(vertices));
     EBO EBO1(indices, sizeof(indices));
 
-    VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
-    VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+    VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     VAO1.Unbind();
     VBO1.Unbind();
     EBO1.Unbind();
 
     GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
+
+    // Texture
+
+    int widthImg, heightImg, numColCh;
+    unsigned char* bytes = stbi_load("../resources/textures/babyolv.png", &widthImg, &heightImg, &numColCh, 0);
+
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(bytes);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    GLuint tex0Uni = glGetUniformLocation(shaderProgram.ID, "tex0");
+    shaderProgram.Activate();
+    glUniform1i(tex0Uni, 0);
 
     float rotation = 0.0f;
     double prevTime = glfwGetTime();
@@ -140,7 +158,8 @@ int main() {
         int projLoc = glGetUniformLocation(shaderProgram.ID, "proj");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
 
-        glUniform1f(uniID, 0.5f);
+        // glUniform1f(uniID, 0.5f);
+        glBindTexture(GL_TEXTURE_2D, texture);
         // glBindVertexArray(VAO);
         VAO1.Bind();
         // glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -153,6 +172,7 @@ int main() {
     VBO1.Delete();
     EBO1.Delete();
     shaderProgram.Delete();
+    glDeleteTextures(1, &texture);
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
