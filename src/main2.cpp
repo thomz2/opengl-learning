@@ -94,7 +94,7 @@ int main() {
     // Texture
 
     int widthImg, heightImg, numColCh;
-    unsigned char* bytes = stbi_load("../resources/textures/babyolv.png", &widthImg, &heightImg, &numColCh, 0);
+    unsigned char* bytes = stbi_load("../resources/textures/alves.png", &widthImg, &heightImg, &numColCh, 0);
 
     GLuint texture;
     glGenTextures(1, &texture);
@@ -107,7 +107,8 @@ int main() {
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
+    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthImg, heightImg, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free(bytes);
