@@ -1,8 +1,11 @@
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <math.h>
 #include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <stb/stb_image.h>
@@ -96,7 +99,7 @@ int main() {
 
     // Texture
 
-    Texture alves("../resources/textures/alves.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+    Texture alves("../resources/textures/babyolv.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
     alves.texUnit(shaderProgram, "tex0", 0);
 
     GLuint tex0Uni = glGetUniformLocation(shaderProgram.ID, "tex0");
@@ -115,10 +118,10 @@ int main() {
         glClearColor(0.5f, 0.7f, 0.9f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        shaderProgram.Activate();
+        // shaderProgram.Activate();
 
         camera.Inputs(window);
-        camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
+        camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::mat4(1.0f);
@@ -144,11 +147,14 @@ int main() {
         int projLoc = glGetUniformLocation(shaderProgram.ID, "proj");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
 
-        // glUniform1f(uniID, 0.5f);
+        // Tells OpenGL which Shader Program we want to use
+		shaderProgram.Activate();
+		// Exports the camera Position to the Fragment Shader for specular lighting
+		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+		// Export the camMatrix to the Vertex Shader of the pyramid
+		camera.Matrix(shaderProgram, "camMatrix");
         alves.Bind();
-        // glBindVertexArray(VAO);
         VAO1.Bind();
-        // glDrawArrays(GL_TRIANGLES, 0, 3);
         glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(int), GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         glfwPollEvents();
