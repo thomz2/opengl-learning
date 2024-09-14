@@ -34,6 +34,8 @@ void main()
 }
 )glsl";
 
+const int WIDTH = 400, HEIGHT = 300;
+
 int main() {
 
     glfwInit();
@@ -42,7 +44,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 800, "Apresentação :)", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Apresentação :)", NULL, NULL);
     if (window == NULL)
     {
         cout << "Failed to create GLFW window" << endl;
@@ -53,7 +55,7 @@ int main() {
     glfwMakeContextCurrent(window);
 
     gladLoadGL();
-    glViewport(0, 0, 800, 800);
+    glViewport(0, 0, WIDTH, HEIGHT);
 
     GLfloat vertices[] =
     { //     COORDENADAS    /         CORES
@@ -123,13 +125,13 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
 
-    Camera camera(800, 800, glm::vec3(0.0f, 0.0f, 2.0f));
+    Camera camera(WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f));
 
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.5f, 0.7f, 0.9f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // glUseProgram(shaderProgram);
+        
         shaderProgram.Activate();
 
         camera.Inputs(window);
@@ -148,7 +150,7 @@ int main() {
 
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
         view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-        proj = glm::perspective(glm::radians(45.0f), (float)(800/800), 0.1f, 100.0f);
+        proj = glm::perspective(glm::radians(45.0f), (float)(WIDTH / HEIGHT), 0.1f, 100.0f);
 
         int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
