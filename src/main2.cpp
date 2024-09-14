@@ -12,6 +12,7 @@
 #include "header/VAO.h"
 #include "header/EBO.h"
 #include "header/Camera.h"
+#include "header/Texture.h"
 
 using namespace std;
 
@@ -95,26 +96,8 @@ int main() {
 
     // Texture
 
-    int widthImg, heightImg, numColCh;
-    unsigned char* bytes = stbi_load("../resources/textures/alves.png", &widthImg, &heightImg, &numColCh, 0);
-
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthImg, heightImg, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    stbi_image_free(bytes);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    Texture alves("../resources/textures/alves.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+    alves.texUnit(shaderProgram, "tex0", 0);
 
     GLuint tex0Uni = glGetUniformLocation(shaderProgram.ID, "tex0");
     shaderProgram.Activate();
@@ -162,7 +145,7 @@ int main() {
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
 
         // glUniform1f(uniID, 0.5f);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        alves.Bind();
         // glBindVertexArray(VAO);
         VAO1.Bind();
         // glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -175,7 +158,7 @@ int main() {
     VBO1.Delete();
     EBO1.Delete();
     shaderProgram.Delete();
-    glDeleteTextures(1, &texture);
+    alves.Delete();
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
