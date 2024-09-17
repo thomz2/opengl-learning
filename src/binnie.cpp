@@ -99,7 +99,7 @@ int main()
         Texture(("../resources/textures/alves.png"), "specular", 1)
     };
 
-    Shader shader("../resources/shaders/default.vert", "../resources/shaders/default.frag");
+    Shader defaultShader("../resources/shaders/default.vert", "../resources/shaders/default.frag");
 
     vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
     vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
@@ -128,11 +128,11 @@ int main()
     glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, value_ptr(lightModel));
     glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 
-    shader.Activate();
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, value_ptr(floorModel));
-    glUniform4f(glGetUniformLocation(shader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-    glUniform3f(glGetUniformLocation(shader.ID, "lightPos"), lightPosition.x, lightPosition.y, lightPosition.z);
-    glUniform1ui(glGetUniformLocation(shader.ID, "type"), type);
+    defaultShader.Activate();
+    glUniformMatrix4fv(glGetUniformLocation(defaultShader.ID, "model"), 1, GL_FALSE, value_ptr(floorModel));
+    glUniform4f(glGetUniformLocation(defaultShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+    glUniform3f(glGetUniformLocation(defaultShader.ID, "lightPos"), lightPosition.x, lightPosition.y, lightPosition.z);
+    glUniform1ui(glGetUniformLocation(defaultShader.ID, "type"), type);
 
     Model model("../resources/models/bunny2/scene.gltf");
 
@@ -152,16 +152,16 @@ int main()
         camera.Inputs(window);
         camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-        light.Draw(lightShader, camera);
-        model.Draw(shader, camera);
-        floor.Draw(shader, camera, floorModel);
+        // light.Draw(lightShader, camera);
+        model.Draw(defaultShader, camera);
+        floor.Draw(defaultShader, camera, floorModel);
         // Swap the back buffer with the front buffer
         glfwSwapBuffers(window);
         // Take care of all GLFW events
         glfwPollEvents();
     }
     // Delete all the objects we've created
-    shader.Delete();
+    defaultShader.Delete();
     lightShader.Delete();
     // Delete window before ending the program
     glfwDestroyWindow(window);

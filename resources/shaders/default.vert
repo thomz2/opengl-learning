@@ -21,9 +21,9 @@ out vec2 texCoord;
 
 
 
-// Imports the camera matrix from the main function
+// Imports the camera matrix
 uniform mat4 camMatrix;
-// Imports the model matrix from the main function
+// Imports the transformation matrices
 uniform mat4 model;
 uniform mat4 translation;
 uniform mat4 rotation;
@@ -33,16 +33,14 @@ uniform mat4 scale;
 void main()
 {
 	// calculates current position
-	//negativo por causa dos glm e gltf terem rotações diferentes
 	crntPos = vec3(model * translation * -rotation * scale * vec4(aPos, 1.0f));
-
 	// Assigns the normal from the Vertex Data to "Normal"
 	Normal = aNormal;
 	// Assigns the colors from the Vertex Data to "color"
 	color = aColor;
 	// Assigns the texture coordinates from the Vertex Data to "texCoord"
 	texCoord = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
-
+	
 	// Outputs the positions/coordinates of all vertices
 	gl_Position = camMatrix * vec4(crntPos, 1.0);
 }
