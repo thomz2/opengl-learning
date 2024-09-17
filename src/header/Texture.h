@@ -13,7 +13,8 @@ class Texture
         const char* type;
         
         Texture(const char* image, const char* texType, GLuint slot);
-        
+    	Texture(const char* image, GLuint slot, GLenum format, GLenum pixelType);
+    
         void texUnit(Shader shader, const char* uniform, GLuint unit);
         void Bind();
         void Unbind();
