@@ -99,8 +99,8 @@ int main() {
 
     // Texture
 
-    Texture alves("../resources/textures/babyolv.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-    alves.texUnit(shaderProgram, "tex0", 0);
+    Texture alves("../resources/textures/alves.png", "diffuse", 0);
+    // alves.texUnit(shaderProgram, "tex0", 0);
 
     GLuint tex0Uni = glGetUniformLocation(shaderProgram.ID, "tex0");
     shaderProgram.Activate();
@@ -118,8 +118,6 @@ int main() {
         glClearColor(0.5f, 0.7f, 0.9f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        // shaderProgram.Activate();
-
         camera.Inputs(window);
         camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
