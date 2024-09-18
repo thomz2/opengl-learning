@@ -19,13 +19,8 @@
 #include "header/Camera.h"
 #include "header/Texture.h"
 
-
-
-
 const unsigned int width = 800;
 const unsigned int height = 800;
-
-
 
 // Vertices coordinates
 GLfloat vertices[] =
@@ -49,6 +44,7 @@ GLfloat lightVertices[] =
 	-0.05f, -0.05f, -0.05f,
 	 0.05f, -0.05f, -0.05f,
 	 0.05f, -0.05f,  0.05f,
+
 	-0.05f,  0.05f,  0.05f,
 	-0.05f,  0.05f, -0.05f,
 	 0.05f,  0.05f, -0.05f,
@@ -71,6 +67,21 @@ GLuint lightIndices[] =
 	4, 6, 7
 };
 
+// Vertices for plane with texture
+std::vector<Vertex> rectangleVerticesVector =
+{ //    COORDINATES     /|                 normals                     / colors                     / texture
+	Vertex{glm::vec3(-1.0f, -2.0f, 0.75f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
+	Vertex{glm::vec3(-1.0f, 0.0f, 0.75f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(1.0f, 0.0f, 0.75f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f)},
+	Vertex{glm::vec3(1.0f, -2.0f, 0.75f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)}
+};
+
+// Indices for plane with texture
+std::vector<GLuint> rectangleIndices =
+{
+	0, 1, 2,
+	0, 2, 3
+};
 
 int main()
 {
@@ -102,8 +113,6 @@ int main()
 	// Specify the viewport of OpenGL in the Window
 	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
 	glViewport(0, 0, width, height);
-
-
 
 	// Generates Shader object using shaders default.vert and default.frag
 	Shader shaderProgram("../resources/shaders/default.vert", "../resources/shaders/default.frag");
@@ -142,7 +151,7 @@ int main()
 	lightEBO.Unbind();
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.0f, 0.7f, -0.25f);
+	glm::vec3 lightPos = glm::vec3(0.0f, 0.9f, 0.0f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
@@ -159,6 +168,15 @@ int main()
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
+	Shader brickShader(
+		"../resources/shaders/object.vert",
+		"../resources/shaders/object.frag" 
+		// ,"../resources/shaders/brick.geom"
+	);
+	brickShader.Activate();
+	glUniform4f(glGetUniformLocation(brickShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(brickShader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
 	// Textures
 	Texture planksTex("../resources/textures/madeira.png", 0, GL_RGBA, GL_UNSIGNED_BYTE);
 	planksTex.texUnit(shaderProgram, "tex0", 0);
@@ -173,9 +191,21 @@ int main()
     glUniform3f(glGetUniformLocation(modelShader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
     glUniform1ui(glGetUniformLocation(modelShader.ID, "type"), 1);
 
+	std::vector<Texture> textures =
+	{
+		Texture("../resources/textures/diffuse.png", "diffuse", 0)
+	};
+
+	// Plane with the texture
+	Mesh plane(rectangleVerticesVector, rectangleIndices, textures);
+
+	// Normal map for the plane
+	Texture normalMap("../resources/textures/normal.png", "normal", 1);
+
 	// Enables the Depth Buffer
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+	
 
 	// Creates camera object
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
@@ -196,7 +226,7 @@ int main()
 		model.Draw(modelShader, camera);
 
 		// Tells OpenGL which Shader Program we want to use
-		shaderProgram.Activate();
+		shaderProgram.Activate();		
 		// Exports the camera Position to the Fragment Shader for specular lighting
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 		// Export the camMatrix to the Vertex Shader of the pyramid
@@ -209,7 +239,10 @@ int main()
 		// Draw primitives, number of indices, datatype of indices, index of indices
 		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
-
+		brickShader.Activate();
+		// normalMap.Bind();
+		// glUniform1i(glGetUniformLocation(shaderProgram.ID, "normal0"), 1);
+		plane.Draw(brickShader, camera);
 
 		// Tells OpenGL which Shader Program we want to use
 		lightShader.Activate();
