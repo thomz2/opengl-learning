@@ -45,14 +45,14 @@ GLuint indices[] =
 
 GLfloat lightVertices[] =
 { //     COORDINATES     //
-	-0.1f, -0.1f,  0.1f,
-	-0.1f, -0.1f, -0.1f,
-	 0.1f, -0.1f, -0.1f,
-	 0.1f, -0.1f,  0.1f,
-	-0.1f,  0.1f,  0.1f,
-	-0.1f,  0.1f, -0.1f,
-	 0.1f,  0.1f, -0.1f,
-	 0.1f,  0.1f,  0.1f
+	-0.05f, -0.05f,  0.05f,
+	-0.05f, -0.05f, -0.05f,
+	 0.05f, -0.05f, -0.05f,
+	 0.05f, -0.05f,  0.05f,
+	-0.05f,  0.05f,  0.05f,
+	-0.05f,  0.05f, -0.05f,
+	 0.05f,  0.05f, -0.05f,
+	 0.05f,  0.05f,  0.05f
 };
 
 GLuint lightIndices[] =
@@ -141,14 +141,12 @@ int main()
 	lightVBO.Unbind();
 	lightEBO.Unbind();
 
-
-
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+	glm::vec3 lightPos = glm::vec3(0.0f, 0.7f, -0.25f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
-	glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 objectPos = glm::vec3(0.0f, 0.06f, 0.0f);
 	glm::mat4 objectModel = glm::mat4(1.0f);
 	objectModel = glm::translate(objectModel, objectPos);
 
@@ -168,15 +166,16 @@ int main()
 	planksSpec.texUnit(shaderProgram, "tex1", 1);
 
     Shader modelShader("../resources/shaders/object.vert", "../resources/shaders/object.frag");
-    Model model("../resources/models/scroll/scene.gltf");
+    Model model("../resources/models/bunny2/scene.gltf");
 	modelShader.Activate();
     glUniformMatrix4fv(glGetUniformLocation(modelShader.ID, "model"), 1, GL_FALSE, value_ptr(objectModel));
     glUniform4f(glGetUniformLocation(modelShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
     glUniform3f(glGetUniformLocation(modelShader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-    glUniform1ui(glGetUniformLocation(modelShader.ID, "type"), 0);
+    glUniform1ui(glGetUniformLocation(modelShader.ID, "type"), 1);
 
 	// Enables the Depth Buffer
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
 	// Creates camera object
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
@@ -219,7 +218,7 @@ int main()
 		// Bind the VAO so OpenGL knows to use it
 		lightVAO.Bind();
 		// Draw primitives, number of indices, datatype of indices, index of indices
-		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
+		// glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
 
 		// Swap the back buffer with the front buffer

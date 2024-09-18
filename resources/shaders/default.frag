@@ -27,8 +27,10 @@ vec4 pointLight()
 	vec3 lightVec = lightPos - crntPos;
 
 	float dist = length(lightVec);
-	float a = 3.0;
-	float b = 0.7;
+	//float a = 3.0;
+	//float b = 0.7;
+	float a = 0.05;
+	float b = 0.01;
 	float inten = 1.0f / (a * dist * dist + b * dist + 1.0f);
 
 	float ambient = 0.20f;
@@ -109,6 +111,12 @@ vec4 spotLight()
 	return (texture(tex0, texCoord) * (diffuse * inten + ambient) + texture(tex1, texCoord).r * specular * inten) * lightColor;
 }
 
+float near = 0.1f;
+float far  = 100.0f;
+
+float linearizeDepth(float depth) {
+	return (2.0 * near * far) / (far + near - (depth * 2.0 - 1.0) * (far - near));
+}
 
 void main()
 {
@@ -117,4 +125,6 @@ void main()
     //else FragColor = directionalLight();
 
 	FragColor = pointLight();
+
+	//FragColor = vec4(vec3(linearizeDepth(gl_FragCoord.z) / far), 1.0f);
 }

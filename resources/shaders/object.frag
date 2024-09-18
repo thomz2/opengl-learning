@@ -28,8 +28,10 @@ vec4 pointLight(){
     vec3 lightVec = lightPos - crntPos;
 
     float dist = length(lightVec);
-    float a = 3.0f;
-    float b = 0.7f;
+    //float a = 3.0;
+	//float b = 0.7;
+	float a = 0.05;
+	float b = 0.01;
     float intensity = 1.0f / (a * dist * dist + b * dist + 1.0f);
 
     float ambient = 0.2f;
