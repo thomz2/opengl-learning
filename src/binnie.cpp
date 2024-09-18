@@ -29,10 +29,10 @@ using namespace std;
 // Vertices coordinates
 Vertex vertices[] =
 {   //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
-    Vertex{glm::vec3(-10.0f, 0.0f,  10.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-    Vertex{glm::vec3(-10.0f, 0.0f, -10.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
-    Vertex{glm::vec3( 10.0f, 0.0f, -10.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
-    Vertex{glm::vec3( 10.0f, 0.0f,  10.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
+    Vertex{glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+    Vertex{glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
+    Vertex{glm::vec3( 1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
+    Vertex{glm::vec3( 1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
 };
 
 // Indices for vertices order
@@ -42,14 +42,12 @@ GLuint indices[] =
     0, 2, 3
 };
 
-// Cria um cubo
 Vertex lightVertices[] =
 { //     COORDINATES     //
     Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
     Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
     Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
     Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
-
     Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
     Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
     Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
@@ -58,48 +56,19 @@ Vertex lightVertices[] =
 
 GLuint lightIndices[] =
 {
-    0, 1, 2,
-    0, 2, 3,
-    0, 4, 7,
-    0, 7, 3,
-    3, 7, 6,
-    3, 6, 2,
-    2, 6, 5,
-    2, 5, 1,
-    1, 5, 4,
-    1, 4, 0,
-    4, 5, 6,
-    4, 6, 7
+        0, 1, 2,
+        0, 2, 3,
+        0, 4, 7,
+        0, 7, 3,
+        3, 7, 6,
+        3, 6, 2,
+        2, 6, 5,
+        2, 5, 1,
+        1, 5, 4,
+        1, 4, 0,
+        4, 5, 6,
+        4, 6, 7
 };
-
-// Vertex cubeVertices[] =
-// {
-//     Vertex{glm::vec3(-1.1f, -1.1f,  1.1f)},
-//     Vertex{glm::vec3(-1.1f, -1.1f, -1.1f)},
-//     Vertex{glm::vec3(1.1f, -1.1f, -1.1f)},
-//     Vertex{glm::vec3(1.1f, -1.1f,  1.1f)},
-
-//     Vertex{glm::vec3(-1.1f,  1.1f,  1.1f)},
-//     Vertex{glm::vec3(-1.1f,  1.1f, -1.1f)},
-//     Vertex{glm::vec3(1.1f,  1.1f, -1.1f)},
-//     Vertex{glm::vec3(1.1f,  1.1f,  1.1f)}
-// };
-
-Vertex cubeVertices[] =
-{
-    //               COORDINATES               /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
-    Vertex{glm::vec3(-1.1f, -1.1f,  1.1f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)}, // ok
-    Vertex{glm::vec3(-1.1f, -1.1f, -1.1f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(0.0f, 0.0f)},// ok
-    Vertex{glm::vec3(1.1f, -1.1f, -1.1f),  glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(1.0f, 0.0f)},
-    Vertex{glm::vec3(1.1f, -1.1f,  1.1f),  glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
-
-    Vertex{glm::vec3(-1.1f,  1.1f,  1.1f), glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f)}, // ok
-    Vertex{glm::vec3(-1.1f,  1.1f, -1.1f), glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 0.0f)},// ok
-    Vertex{glm::vec3(1.1f,  1.1f, -1.1f),  glm::vec3(1.0f, 0.5f, 0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f)},
-    Vertex{glm::vec3(1.1f,  1.1f,  1.1f),  glm::vec3(0.5f, 1.0f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f)}
-};
-
-
 int main()
 {
     glfwInit();
@@ -126,11 +95,11 @@ int main()
     glViewport(0, 0, width, height);
 
     Texture textures[] {
-        Texture(("../resources/textures/metal.jpg"), "diffuse", 0),
-        Texture(("../resources/textures/metal.jpg"), "specular", 1)
+        Texture(("../resources/textures/alves.png"), "diffuse", 0),
+        Texture(("../resources/textures/alves.png"), "specular", 1)
     };
 
-    Shader defaultShader("../resources/shaders/default.vert", "../resources/shaders/default.frag");
+    Shader shader("../resources/shaders/object.vert", "../resources/shaders/object.frag");
 
     vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
     vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
@@ -145,30 +114,25 @@ int main()
     Light light(lightVerts, lightInd, 0); // Criando a "mesh" luz, mandadno tex como placeholder
     // Mesh  lightMesh(lightVerts, lightInd, tex);
 
-    vector <Vertex> cubeVerts (cubeVertices, cubeVertices + sizeof(cubeVertices) / sizeof(Vertex));
-    Mesh cube(cubeVerts, lightInd, tex);
-
     glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     glm::vec3 lightPosition = glm::vec3(0.0f, 0.9f, 0.0f);
     glm::mat4 lightModel = glm::mat4(1.0f);
     unsigned int type = light.type;
     lightModel = translate(lightModel, lightPosition);
 
-    glm::vec3 floorPosition = glm::vec3(0.0f, -0.15f, 0.0f);
+    glm::vec3 floorPosition = glm::vec3(0.0f, -0.05f, 0.0f);
     glm::mat4 floorModel = glm::mat4(1.0f);
     floorModel = translate(floorModel, floorPosition);
-
-    glm::mat4 cubeModel = floorModel;
 
     lightShader.Activate();
     glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, value_ptr(lightModel));
     glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 
-    defaultShader.Activate();
-    glUniformMatrix4fv(glGetUniformLocation(defaultShader.ID, "model"), 1, GL_FALSE, value_ptr(floorModel));
-    glUniform4f(glGetUniformLocation(defaultShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-    glUniform3f(glGetUniformLocation(defaultShader.ID, "lightPos"), lightPosition.x, lightPosition.y, lightPosition.z);
-    glUniform1ui(glGetUniformLocation(defaultShader.ID, "type"), type);
+    shader.Activate();
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, value_ptr(floorModel));
+    glUniform4f(glGetUniformLocation(shader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+    glUniform3f(glGetUniformLocation(shader.ID, "lightPos"), lightPosition.x, lightPosition.y, lightPosition.z);
+    glUniform1ui(glGetUniformLocation(shader.ID, "type"), type);
 
     Model model("../resources/models/bunny2/scene.gltf");
 
@@ -188,17 +152,16 @@ int main()
         camera.Inputs(window);
         camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-        // light.Draw(lightShader, camera);
-        model.Draw(defaultShader, camera);
-        // floor.Draw(defaultShader, camera, floorModel);
-        cube.Draw(defaultShader, camera, cubeModel);
+        light.Draw(lightShader, camera);
+        model.Draw(shader, camera);
+        floor.Draw(shader, camera, floorModel);
         // Swap the back buffer with the front buffer
         glfwSwapBuffers(window);
         // Take care of all GLFW events
         glfwPollEvents();
     }
     // Delete all the objects we've created
-    defaultShader.Delete();
+    shader.Delete();
     lightShader.Delete();
     // Delete window before ending the program
     glfwDestroyWindow(window);

@@ -167,15 +167,6 @@ int main()
 	Texture planksSpec("../resources/textures/madeiraSpec.png", 1, GL_RED, GL_UNSIGNED_BYTE);
 	planksSpec.texUnit(shaderProgram, "tex1", 1);
 
-	// Original code from the tutorial
-	/*Texture planksTex("planks.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	planksTex.texUnit(shaderProgram, "tex0", 0);
-	Texture planksSpec("planksSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
-	planksSpec.texUnit(shaderProgram, "tex1", 1);*/
-
-
-
-
 	// Enables the Depth Buffer
 	glEnable(GL_DEPTH_TEST);
 
