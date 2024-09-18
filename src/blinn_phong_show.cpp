@@ -167,6 +167,14 @@ int main()
 	Texture planksSpec("../resources/textures/madeiraSpec.png", 1, GL_RED, GL_UNSIGNED_BYTE);
 	planksSpec.texUnit(shaderProgram, "tex1", 1);
 
+    Shader modelShader("../resources/shaders/object.vert", "../resources/shaders/object.frag");
+    Model model("../resources/models/scroll/scene.gltf");
+	modelShader.Activate();
+    glUniformMatrix4fv(glGetUniformLocation(modelShader.ID, "model"), 1, GL_FALSE, value_ptr(objectModel));
+    glUniform4f(glGetUniformLocation(modelShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+    glUniform3f(glGetUniformLocation(modelShader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+    glUniform1ui(glGetUniformLocation(modelShader.ID, "type"), 0);
+
 	// Enables the Depth Buffer
 	glEnable(GL_DEPTH_TEST);
 
@@ -186,6 +194,7 @@ int main()
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
+		model.Draw(modelShader, camera);
 
 		// Tells OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
