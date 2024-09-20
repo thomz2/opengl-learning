@@ -67,16 +67,16 @@ GLuint lightIndices[] =
 	4, 6, 7
 };
 
-// Vertices for plane with texture
+// Vertices para a parede de tijolo
 std::vector<Vertex> rectangleVerticesVector =
-{ //    COORDINATES     /|                 normals                     / colors                     / texture
-	Vertex{glm::vec3(-1.0f, -2.0f, 0.75f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
-	Vertex{glm::vec3(-1.0f, 0.0f, 0.75f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(1.0f, 0.0f, 0.75f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f)},
-	Vertex{glm::vec3(1.0f, -2.0f, 0.75f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)}
+{ //    COORDINATES     /                 normals                     / colors                     / texture
+	Vertex{glm::vec3(-1.0f, -2.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
+	Vertex{glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f, -2.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)}
 };
 
-// Indices for plane with texture
+// Indices para a parede de tijolo
 std::vector<GLuint> rectangleIndices =
 {
 	0, 1, 2,
@@ -96,8 +96,7 @@ int main()
 	// So that means we only have the modern functions
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// Create a GLFWwindow object of 800 by 800 pixels, naming it "YoutubeOpenGL"
-	GLFWwindow* window = glfwCreateWindow(width, height, "YoutubeOpenGL", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, "Projeto Thomaz e Gabriel", NULL, NULL);
 	// Error check if the window fails to create
 	if (window == NULL)
 	{
@@ -170,8 +169,7 @@ int main()
 
 	Shader brickShader(
 		"../resources/shaders/object.vert",
-		"../resources/shaders/object.frag" 
-		// ,"../resources/shaders/brick.geom"
+		"../resources/shaders/brick.frag" 
 	);
 	brickShader.Activate();
 	glUniform4f(glGetUniformLocation(brickShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
@@ -201,6 +199,7 @@ int main()
 
 	// Normal map for the plane
 	Texture normalMap("../resources/textures/normal.png", "normal", 1);
+	// Texture displacementMap("../resources/textures/displacement.png", "displacement", 2);
 
 	// Enables the Depth Buffer
 	glEnable(GL_DEPTH_TEST);
@@ -208,7 +207,7 @@ int main()
 	
 
 	// Creates camera object
-	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(width, height, glm::vec3(-1.90f, 0.5f, -0.01f));
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
@@ -222,8 +221,7 @@ int main()
 		camera.Inputs(window);
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
-
-		model.Draw(modelShader, camera);
+		// cout << camera.Position.x << " " << camera.Position.y << " " << camera.Position.z << endl;
 
 		// Tells OpenGL which Shader Program we want to use
 		shaderProgram.Activate();		
@@ -239,9 +237,13 @@ int main()
 		// Draw primitives, number of indices, datatype of indices, index of indices
 		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
+		model.Draw(modelShader, camera);
+
 		brickShader.Activate();
-		// normalMap.Bind();
-		// glUniform1i(glGetUniformLocation(shaderProgram.ID, "normal0"), 1);
+		normalMap.Bind();
+		glUniform1i(glGetUniformLocation(brickShader.ID, "normal0"), 1);
+		// displacementMap.Bind();
+		// glUniform1i(glGetUniformLocation(brickShader.ID, "displacement0"), 2);
 		plane.Draw(brickShader, camera);
 
 		// Tells OpenGL which Shader Program we want to use
